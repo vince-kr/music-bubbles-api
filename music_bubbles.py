@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from dataclasses import dataclass
 
 @dataclass
@@ -31,18 +31,40 @@ LINE = (0, 0, WIDTH, int(HEIGHT*7/16))
 BUBBLE = 180
 SPACE = BUBBLE/4
 
-# I have 550px of height and need to divide 8 bubbles - keeping in mind they all need to fit inside
-# so the vertical offset is 58px for each bubble
-
 partition = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-draw = ImageDraw.Draw(partition)
+title_area = Image.new("RGBA", (WIDTH, int(HEIGHT * 2 / 16)), (0, 0, 0, 0))
+line_one = Image.new("RGBA", (WIDTH, int(HEIGHT*7/16)), (0,0,0,0))
+line_two = Image.new("RGBA", (WIDTH, int(HEIGHT*7/16)), (0,0,0,0))
 
-tune = ["e", "d", "c", "d", "e", "R", "d", "d"]
+title = ImageDraw.Draw(title_area)
+title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=120)
+title.text((int(WIDTH / 2), 12), "Melody", fill="black", font=title_font, anchor="mt", align="center")
 
-for i, note in enumerate(tune):
+line_one_bubbles = ImageDraw.Draw(line_one)
+line_two_bubbles = ImageDraw.Draw(line_two)
+
+line_one_tune = ["c", "g", "c", "g", "a", "g", "f", "e"]
+line_two_tune = ["d", "b", "g", "e", "d", "e", "c"]
+
+# First, line_one_bubbles
+line_one_tune = [NOTES[note] for note in line_one_tune]
+
+for i, note in enumerate(line_one_tune):
     start_x = 12 + i * (BUBBLE + SPACE)
-    start_y = 58 * (7 - NOTES[note].pos)
+    start_y = 58 * (7 - note.pos)
     end_x, end_y = start_x + BUBBLE, start_y + BUBBLE
-    draw.ellipse((start_x, start_y, end_x, end_y), fill=NOTES[note].colour)
+    line_one_bubbles.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
 
+# And now line_two_bubbles
+line_two_tune = [NOTES[note] for note in line_two_tune]
+
+for i, note in enumerate(line_two_tune):
+    start_x = 12 + i * (BUBBLE + SPACE)
+    start_y = 58 * (7 - note.pos)
+    end_x, end_y = start_x + BUBBLE, start_y + BUBBLE
+    line_two_bubbles.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
+
+partition.paste(title_area, (0, 0))
+partition.paste(line_one, (0,int(HEIGHT*2/16)))
+partition.paste(line_two, (0,int(HEIGHT*9/16)))
 partition.show()
