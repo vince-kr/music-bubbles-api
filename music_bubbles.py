@@ -38,7 +38,6 @@ title.text((int(WIDTH / 2), 6), "Melody", fill="black", font=title_font, anchor=
 
 
 # Now the music bars
-# I need eight bubbles for notes and seven spacers, with the spacers at 1/4 the size of the bubbles
 BUBBLE = 180
 SPACE = BUBBLE/4
 # This gives me 180 * 8 + 45 * 7 = 1755 width, leaving 27px
@@ -46,31 +45,22 @@ SPACE = BUBBLE/4
 # Each music bar should get a thin black line along its top in addition to any note bubbles
 
 
-# First, line_one_bubbles
-line_one_draw = ImageDraw.Draw(line_one)
-line_one_tune = ["c", "g", "c", "g", "a", "g", "f", "e"]
-line_one_tune = [NOTES[note] for note in line_one_tune]
+# Function takes a line object and a list of notes to draw in it
+def draw_bubbles(line: Image, tune: list[str]) -> Image:
+    line_draw = ImageDraw.Draw(line)
+    line_tune = [NOTES[note] for note in tune]
 
-for i, note in enumerate(line_one_tune):
-    start_x = 12 + i * (BUBBLE + SPACE)
-    start_y = 381 - ((note.pos-1) * 55)
-    end_x, end_y = start_x + BUBBLE, start_y + BUBBLE
-    line_one_draw.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
+    for i, note in enumerate(line_tune):
+        start_x = 12 + i * (BUBBLE + SPACE)
+        start_y = 381 - ((note.pos-1) * 55)
+        end_x, end_y = start_x + BUBBLE, start_y + BUBBLE
+        line_draw.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
 
-line_one_draw.line((0,0,WIDTH,0), fill="black", width=12)
+    line_draw.line((0,0,WIDTH,0), fill="black", width=12)
+    return line
 
-# And now line_two_bubbles
-line_two_draw = ImageDraw.Draw(line_two)
-line_two_tune = ["d", "b", "g", "e", "d", "e", "c"]
-line_two_tune = [NOTES[note] for note in line_two_tune]
-
-for i, note in enumerate(line_two_tune):
-    start_x = 12 + i * (BUBBLE + SPACE)
-    start_y = 381 - ((note.pos-1) * 55)
-    end_x, end_y = start_x + BUBBLE, start_y + BUBBLE
-    line_two_draw.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
-
-line_two_draw.line((0,0,WIDTH,0), fill="black", width=12)
+line_one = draw_bubbles(line_one, ["c", "g", "c", "g", "a", "g", "f", "e"])
+line_two = draw_bubbles(line_two, ["d", "b", "g", "e", "d", "e", "c"])
 
 # Paste the three elements into the partition, then show the partition
 partition.paste(title_area, (0, 0))
