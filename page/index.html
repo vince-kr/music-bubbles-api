@@ -1,0 +1,34 @@
+<html>
+  <body>
+    <h1>First canvas</h1>
+    <p>Enter notes in the input field and watch bubbles appear!</p>
+    <canvas id="bubbles" width="800" height="600" style="border: 2px solid black;"></canvas>
+    <input id="tune">
+    <script>
+      const listOfNotes = document.getElementById("tune")
+      listOfNotes.addEventListener("input", proctor)
+
+      function proctor(tune) {
+        // Call each required function in turn
+        if (!validateInput(tune)) {
+          // Turn the input box red or smth and return the function
+          return
+        }
+        let coordinates = getBubbleNumbers(tune);
+        drawBubbles(coordinates)
+      }
+
+      function validateInput(tune) {
+        // Make sure user only entered valid note names (a - g)
+      }
+
+      function getBubbleNumbers(tune) {
+        // Call the API that takes a list of notes and returns a JSON with coordinates to draw
+      }
+
+      function drawBubbles(coordinates) {
+        // Access the canvas and draw circles according to coordinates
+      }
+    </script>
+  </body>
+</html>
