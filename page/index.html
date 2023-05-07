@@ -1,10 +1,25 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+  </head>
   <body>
     <h1>First canvas</h1>
     <p>Enter notes in the input field and watch bubbles appear!</p>
-    <canvas id="bubbles" width="800" height="600" style="border: 2px solid black;"></canvas>
+    <div id="canvas_container">
+      <canvas id="bubbles"></canvas>
+    </div>
     <input id="tune">
+
     <script>
+      const canvasContainer = document.getElementById("canvas_container")
+      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.4)
+      let canvasHeight = Math.round(canvasWidth * 0.70707)  // approximately
+      // alert(canvasWidth + " - " + canvasHeight)
+      canvasContainer.style.width = canvasWidth + "px"
+      canvasContainer.style.height = canvasHeight + "px"
+
+      const bubblesCanvas = document.getElementById("bubbles")
+
       const listOfNotes = document.getElementById("tune")
       listOfNotes.addEventListener("input", proctor)
 
