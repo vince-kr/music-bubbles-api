@@ -1,49 +1,58 @@
-<html>
+<!DOCTYPE html>
   <head>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1>First canvas</h1>
-    <p>Enter notes in the input field and watch bubbles appear!</p>
     <div id="canvas_container">
       <canvas id="bubbles"></canvas>
     </div>
-    <input id="tune">
+    <div id="inputs">
+      <label for="title">Title: </label><input id="title"><br />
+      <label for="tune">Tune: </label><input id="tune">
+    </div>
 
     <script>
-      const canvasContainer = document.getElementById("canvas_container")
-      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.4)
-      let canvasHeight = Math.round(canvasWidth * 0.70707)  // approximately
-      // alert(canvasWidth + " - " + canvasHeight)
-      canvasContainer.style.width = canvasWidth + "px"
-      canvasContainer.style.height = canvasHeight + "px"
+      // Canvas size and dynamic resize
+      const canvasContainer = document.getElementById("canvas_container");
+      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.58);
+      let canvasHeight = Math.round(canvasWidth * 0.70707);  // approximately
+      canvasContainer.style.width = canvasWidth + "px";
+      canvasContainer.style.height = canvasHeight + "px";
 
-      const bubblesCanvas = document.getElementById("bubbles")
+      window.addEventListener("resize", function() {
+        let canvasWidth = Math.round(document.documentElement.clientWidth * 0.58);
+        let canvasHeight = Math.round(canvasWidth * 0.70707);
+        canvasContainer.style.width = canvasWidth + "px";
+        canvasContainer.style.height = canvasHeight + "px";
+      });
 
-      const listOfNotes = document.getElementById("tune")
-      listOfNotes.addEventListener("input", proctor)
+      // Canvas contents
+      const bubblesCanvas = document.getElementById("bubbles");
+
+      const listOfNotes = document.getElementById("tune");
+      listOfNotes.addEventListener("input", proctor);
 
       function proctor(tune) {
         // Call each required function in turn
         if (!validateInput(tune)) {
           // Turn the input box red or smth and return the function
-          return
-        }
+          return;
+        };
         let coordinates = getBubbleNumbers(tune);
-        drawBubbles(coordinates)
-      }
+        drawBubbles(coordinates);
+      };
 
       function validateInput(tune) {
         // Make sure user only entered valid note names (a - g)
-      }
+      };
 
       function getBubbleNumbers(tune) {
         // Call the API that takes a list of notes and returns a JSON with coordinates to draw
-      }
+      };
 
       function drawBubbles(coordinates) {
         // Access the canvas and draw circles according to coordinates
-      }
+      };
     </script>
   </body>
 </html>
