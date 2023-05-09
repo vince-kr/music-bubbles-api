@@ -14,13 +14,13 @@
     <script>
       // Canvas size and dynamic resize
       const canvasContainer = document.getElementById("canvas_container");
-      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.58);
+      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.5);
       let canvasHeight = Math.round(canvasWidth * 0.70707);  // approximately
       canvasContainer.style.width = canvasWidth + "px";
       canvasContainer.style.height = canvasHeight + "px";
 
       window.addEventListener("resize", function() {
-        let canvasWidth = Math.round(document.documentElement.clientWidth * 0.58);
+        let canvasWidth = Math.round(document.documentElement.clientWidth * 0.5);
         let canvasHeight = Math.round(canvasWidth * 0.70707);
         canvasContainer.style.width = canvasWidth + "px";
         canvasContainer.style.height = canvasHeight + "px";
@@ -38,16 +38,27 @@
           // Turn the input box red or smth and return the function
           return;
         };
-        let coordinates = getBubbleNumbers(tune);
+        let coordinates = getBubbleNumbers(tune)
+          .then(bubbleCoords => {
+            return bubbleCoords;
+          })
+          .catch(error => console.error(error));
         drawBubbles(coordinates);
       };
 
       function validateInput(tune) {
-        // Make sure user only entered valid note names (a - g)
+        // Make sure title only contains alphanumeric characters
+        // Make sure tune only contains valid note names (a - g)
+        // This should also be safely checked in the backend
       };
 
       function getBubbleNumbers(tune) {
-        // Call the API that takes a list of notes and returns a JSON with coordinates to draw
+        if tune.length == 0 {
+          return []
+        };
+        return fetch('http://music-bubbles-api.pep/${tune}')
+          .then(response => response.json())
+          .catch(error => console.error(error))
       };
 
       function drawBubbles(coordinates) {
