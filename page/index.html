@@ -53,7 +53,7 @@
       };
 
       function getBubbleNumbers(tune) {
-        if tune.length == 0 {
+        if (tune.length == 0) {
           return []
         };
         return fetch('http://music-bubbles-api.pep/${tune}')
