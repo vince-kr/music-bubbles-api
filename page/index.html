@@ -4,7 +4,7 @@
   </head>
   <body>
     <div id="canvas_container">
-      <canvas id="bubbles"></canvas>
+      <canvas id="bubbles" width="2970" height="2100"></canvas>
     </div>
     <div id="inputs">
       <label for="title">Title: </label><input id="title"><br />
@@ -29,6 +29,13 @@
       // Canvas contents
       const bubblesCanvas = document.getElementById("bubbles");
 
+      // Some manual note drawing to get an idea
+      const bubblesContext = bubblesCanvas.getContext("2d");
+      bubblesContext.fillStyle = "red";
+      bubblesContext.beginPath();
+      bubblesContext.arc(360, 150, 120, 0, 2*Math.PI);
+      bubblesContext.fill();
+
       const listOfNotes = document.getElementById("tune");
       listOfNotes.addEventListener("input", proctor);
 
@@ -46,10 +53,19 @@
         drawBubbles(coordinates);
       };
 
-      function validateInput(tune) {
-        // Make sure title only contains alphanumeric characters
+      function validateTitle(title) {
+        // Make sure the title only contains alphanumeric characters
+        // This should also be safely checked in the backend
+        const lettersNumbersSpacesRegex = /^[0-9a-zA-Z\s]+$/;
+        return lettersNumbersSpacesRegex.test(title);
+
+      }
+
+      function validateTune(tune) {
         // Make sure tune only contains valid note names (a - g)
         // This should also be safely checked in the backend
+        const noteNamesRegex = /^[abcdefgr\s]+$/;
+        return noteNamesRegex.test(tune);
       };
 
       function getBubbleNumbers(tune) {
