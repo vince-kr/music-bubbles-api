@@ -9,13 +9,13 @@ class Note:
 
 
 NOTES = {
-    "c": Note("#ee0000", 1),
-    "d": Note("#ff860d", 2),
-    "e": Note("#ffff38", 3),
-    "f": Note("#069a2e", 4),
-    "g": Note("#0000ee", 5),
-    "a": Note("#e84473", 6),
-    "b": Note("#000060", 7),
+    "b": Note("#000060", 1),
+    "c": Note("#ee0000", 2),
+    "d": Note("#ff860d", 3),
+    "e": Note("#ffff38", 4),
+    "f": Note("#069a2e", 5),
+    "g": Note("#0000ee", 6),
+    "a": Note("#e84473", 7),
     "R": Note("#00000000", 0),  # rest
 }
 
@@ -36,7 +36,7 @@ font_size = TITLE_AREA[1]
 title_font = ImageFont.truetype("DejaVuSans-Bold.ttf", size=font_size)
 title.text(
     (int(WIDTH / 2), 0),
-    "Melody",
+    "Little bubbles",
     fill="black",
     font=title_font,
     anchor="mt",
@@ -62,7 +62,7 @@ def calculate_sizes(canvas_width: int, notes_per_line: int = 8) -> tuple[int, in
     return bubble_diameter, spacer_width, offset_in_px
 
 
-bubble, spacer, offset = calculate_sizes(WIDTH)
+bubble, spacer, offset = calculate_sizes(WIDTH, 16)
 
 # Each music bar should get a thin black line along its top in addition to any note bubbles
 
@@ -74,7 +74,7 @@ def draw_bubbles(line: Image, notes: list[str]) -> Image:
 
     for i, note in enumerate(line_tune):
         start_x = offset + i * (bubble + spacer)
-        start_y = 400 - ((note.pos - 1) * 60)
+        start_y = 480 - ((note.pos - 1) * 75)
         end_x, end_y = start_x + bubble, start_y + bubble
         line_draw.ellipse((start_x, start_y, end_x, end_y), fill=note.colour)
 
@@ -83,8 +83,41 @@ def draw_bubbles(line: Image, notes: list[str]) -> Image:
 
 
 tune = [
-    ["c", "g", "c", "g", "a", "g", "f", "e"],
-    ["d", "b", "g", "e", "d", "e", "c", "R"],
+    [
+        "c",
+        "f",
+        "g",
+        "e",
+        "f",
+        "d",
+        "e",
+        "b",
+        "c",
+        "f",
+        "g",
+        "e",
+        "a",
+        "f",
+        "d",
+        "b",
+    ],
+    [
+        "c",
+        "f",
+        "g",
+        "e",
+        "f",
+        "d",
+        "e",
+        "b",
+        "g",
+        "a",
+        "f",
+        "d",
+        "e",
+        "f",
+        "c",
+    ],
 ]
 
 lines = [
