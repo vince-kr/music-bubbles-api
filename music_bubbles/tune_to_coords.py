@@ -5,18 +5,16 @@ import json
 @dataclass
 class Note:
     color: str
-    pos: int
 
 
 NOTES = {
-    "c": Note("#ee0000", 1),
-    "d": Note("#ff860d", 2),
-    "e": Note("#ffff38", 3),
-    "f": Note("#069a2e", 4),
-    "g": Note("#0000ee", 5),
-    "a": Note("#e84473", 6),
-    "b": Note("#000060", 7),
-    "R": Note("#00000000", 0),  # rest
+    "c": Note("#ee0000"),
+    "d": Note("#ff860d"),
+    "e": Note("#ffff38"),
+    "f": Note("#069a2e"),
+    "g": Note("#0000ee"),
+    "a": Note("#e84473"),
+    "b": Note("#000060"),
 }
 
 
@@ -35,3 +33,8 @@ def tune_to_coords(
         for i, xpos in enumerate(fixed_xpos):
             coordinates[i].x = xpos
     return coordinates
+
+    # Highest note has y=0; lowest note has y=height-bubble_size (963-594)=369
+    # But find x <= 369 where x % (len(NOTES)-1) == 0
+    # vertical_step_size = int((963-594) / 6)
+    # vertical_step_size -= vertical_step_size % 6
