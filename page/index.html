@@ -12,12 +12,12 @@
     </div>
 
     <script>
-      // Canvas size and dynamic resize
+      // Canvas container size and dynamic resize
       const canvasContainer = document.getElementById("canvas_container");
-      let canvasWidth = Math.round(document.documentElement.clientWidth * 0.5);
-      let canvasHeight = Math.round(canvasWidth * 0.70707);  // approximately
-      canvasContainer.style.width = canvasWidth + "px";
-      canvasContainer.style.height = canvasHeight + "px";
+      let canvasWidthRendered = Math.round(document.documentElement.clientWidth * 0.5);
+      let canvasHeightRendered = Math.round(canvasWidthRendered * 0.70707);  // approximately
+      canvasContainer.style.width = canvasWidthRendered + "px";
+      canvasContainer.style.height = canvasHeightRendered + "px";
 
       window.addEventListener("resize", function() {
         let canvasWidth = Math.round(document.documentElement.clientWidth * 0.5);
@@ -28,12 +28,15 @@
 
       // Canvas contents
       const bubblesCanvas = document.getElementById("bubbles");
+      // Set canvas size (can be got from API at a later stage)
+      bubblesCanvas.width = 1782
+      bubblesCanvas.height = 1260
 
       // Some manual note drawing to get an idea
       const bubblesContext = bubblesCanvas.getContext("2d");
       bubblesContext.fillStyle = "red";
       bubblesContext.beginPath();
-      bubblesContext.arc(360, 150, 120, 0, 2*Math.PI);
+      bubblesContext.arc(360, 630, 120, 0, 2*Math.PI);
       bubblesContext.fill();
 
       const listOfNotes = document.getElementById("tune");
