@@ -18,21 +18,30 @@ NOTES = {
 }
 
 
+def _calculate_xpos(canvas_width: int, tune_length: int = 4):
+    bubble_count = tune_length
+    spacer_count = tune_length - 1
+    bubble_size = int(canvas_width / (tune_length + 0.25 * tune_length))
+    bubble_size -= bubble_size % 3
+    spacer_size = int(bubble_size / 3)
+    offset = int(
+        (canvas_width - (bubble_size * bubble_count + spacer_size * spacer_count)) / 2
+    )
+    fixed_xpos = (offset + i * (bubble_size + spacer_size) for i in range(4))
+    return fixed_xpos
+
+
 def tune_to_coords(
     tune: list[str], canvas_width: int, canvas_height: int
 ) -> list[Note]:
-    coordinates = [NOTES[note] for note in tune]
+    tune_data = [NOTES[note] for note in tune]
     if len(tune) <= 4:
-        bubble_size = int(canvas_width / 5)
-        bubble_size -= bubble_size % 3
-        spacer_size = int(bubble_size / 3)
-        offset = int((canvas_width - (bubble_size + spacer_size)) / 2)
-        fixed_xpos = (
-            offset + i * (bubble_size + spacer_size) for i in range(len(tune))
-        )
-        for i, xpos in enumerate(fixed_xpos):
-            coordinates[i].x = xpos
-    return coordinates
+        fixed_xpos = _calculate_xpos(canvas_width)
+        for note, xpos in zip(tune_data, fixed_xpos):
+            note.x = xpos
+    else:
+        dynamic_xpos = _calculate_xpos(canvas_width)
+    return tune_data
 
     # Highest note has y=0; lowest note has y=height-bubble_size (963-594)=369
     # But find x <= 369 where x % (len(NOTES)-1) == 0
