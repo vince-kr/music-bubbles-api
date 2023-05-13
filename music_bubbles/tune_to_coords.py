@@ -7,40 +7,39 @@ class Note:
     color: str
 
 
-NOTES = {
-    "c": Note("#ee0000"),
-    "d": Note("#ff860d"),
-    "e": Note("#ffff38"),
-    "f": Note("#069a2e"),
-    "g": Note("#0000ee"),
-    "a": Note("#e84473"),
-    "b": Note("#000060"),
+COLORS = {
+    "c": "#ee0000",
+    "d": "#ff860d",
+    "e": "#ffff38",
+    "f": "#069a2e",
+    "g": "#0000ee",
+    "a": "#e84473",
+    "b": "#000060",
 }
 
 
-def _calculate_xpos(canvas_width: int, tune_length: int = 4):
-    bubble_count = tune_length
-    spacer_count = tune_length - 1
-    bubble_size = int(canvas_width / (tune_length + 0.25 * tune_length))
+def _calculate_xpos(canvas_width: int, number_of_notes: int = 4):
+    number_of_spacers = number_of_notes - 1
+    bubble_size = int(canvas_width / (number_of_notes + number_of_spacers / 3))
     bubble_size -= bubble_size % 3
+    bubbles_sum = bubble_size * number_of_notes
     spacer_size = int(bubble_size / 3)
-    offset = int(
-        (canvas_width - (bubble_size * bubble_count + spacer_size * spacer_count)) / 2
-    )
-    fixed_xpos = (offset + i * (bubble_size + spacer_size) for i in range(4))
-    return fixed_xpos
+    spacers_sum = spacer_size * number_of_spacers
+    offset = int((canvas_width - (bubbles_sum + spacers_sum)) / 2)
+    xpos = (offset + i * (bubble_size + spacer_size) for i in range(number_of_notes))
+    return xpos
 
 
 def tune_to_coords(
     tune: list[str], canvas_width: int, canvas_height: int
-) -> list[Note]:
-    tune_data = [NOTES[note] for note in tune]
+) -> list[dict]:
+    tune_data = [{"name": note, "color": COLORS[note]} for note in tune]
     if len(tune) <= 4:
-        fixed_xpos = _calculate_xpos(canvas_width)
-        for note, xpos in zip(tune_data, fixed_xpos):
-            note.x = xpos
+        x_positions = _calculate_xpos(canvas_width, 4)
     else:
-        dynamic_xpos = _calculate_xpos(canvas_width)
+        x_positions = _calculate_xpos(canvas_width, len(tune))
+    for note, pos in zip(tune_data, x_positions):
+        note["x"] = pos
     return tune_data
 
     # Highest note has y=0; lowest note has y=height-bubble_size (963-594)=369
