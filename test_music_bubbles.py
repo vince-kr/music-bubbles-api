@@ -27,11 +27,11 @@ class TestTuneToCoords(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_notesHaveXAxisAttribute(self):
-        tune = ["c", "e"]
-        canvas_size = (2970, 963)
+        tune = ["c", "e", "g", "b"]
+        canvas_size = (60, 40)
         coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-        expected = (0, 792)
-        actual = (coordinates[0]["x"], coordinates[1]["x"])
+        expected = (0, 16, 32, 48)
+        actual = tuple(coord["x"] for coord in coordinates)
         self.assertEqual(expected, actual)
 
     def test_tuneWithMoreThanFourNotesHaveXAxisAttributes(self):
@@ -42,10 +42,18 @@ class TestTuneToCoords(unittest.TestCase):
         actual = tuple(coord["x"] for coord in coordinates)
         self.assertEqual(expected, actual)
 
-    # def test_notesHaveYAxisAttribute(self):
-    #     tune = ["c", "e"]
-    #     canvas_size = (2970, 963)
-    #     coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-    #     expected = (369, 253)
-    # actual = (coordinates[0].y, coordinates[1].y)
-    # self.assertEqual(expected, actual)
+    def test_notesHaveSizeAttribute(self):
+        tune = ["c", "d", "e", "f", "g", "a", "b", "c"]
+        canvas_size = (2970, 963)
+        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
+        expected = 285
+        actual = coordinates[0]["diameter"]
+        self.assertEqual(expected, actual)
+
+    def test_notesHaveYAxisAttribute(self):
+        tune = ["c", "e"]
+        canvas_size = (2970, 963)
+        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
+        expected = (369, 247)
+        actual = (coordinates[0]["y"], coordinates[1]["y"])
+        self.assertEqual(expected, actual)
