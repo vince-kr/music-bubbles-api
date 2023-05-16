@@ -34,7 +34,7 @@ NOTE_ATTRIBUTES = {
 }
 
 
-def _calculate_spatials(canvas_width: int, number_of_notes: int):
+def _calculate_xpos(canvas_width: int, number_of_notes: int):
     number_of_spacers = number_of_notes - 1
     bubble_size = int(canvas_width / (number_of_notes + number_of_spacers / 3))
     bubble_size -= bubble_size % 3
@@ -44,6 +44,13 @@ def _calculate_spatials(canvas_width: int, number_of_notes: int):
     offset = int((canvas_width - (bubbles_sum + spacers_sum)) / 2)
     xpos = (offset + i * (bubble_size + spacer_size) for i in range(number_of_notes))
     return bubble_size, xpos
+
+
+def _calculate_bubble_size(canvas_width: int, number_of_notes: int) -> int:
+    number_of_spacers = number_of_notes - 1
+    unrounded = int(canvas_width / (number_of_notes + number_of_spacers / 3))
+    bubble_size = unrounded - unrounded % 3
+    return bubble_size
 
 
 def tune_to_coords(
@@ -58,9 +65,9 @@ def tune_to_coords(
         for note in tune
     ]
     if len(tune) <= 4:
-        diameter, x_positions = _calculate_spatials(canvas_width, 4)
+        diameter, x_positions = _calculate_xpos(canvas_width, 4)
     else:
-        diameter, x_positions = _calculate_spatials(canvas_width, len(tune))
+        diameter, x_positions = _calculate_xpos(canvas_width, len(tune))
     for note, pos in zip(tune_data, x_positions):
         note["x"] = pos
         note["diameter"] = diameter
