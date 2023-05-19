@@ -1,59 +1,56 @@
 import unittest
 import json
-from music_bubbles import tune_to_coords
+import music_bubbles
 
 
 class TestTuneToCoords(unittest.TestCase):
     def test_sanity(self):
         self.assertTrue(True)
 
-    def test_givenEmptyTune_ttcReturnsEmptyList(self):
-        expected = list()
-        actual = tune_to_coords.tune_to_coords([], 12, 12)
+    def test_givenEmptyTune_ReturnsEmptyList(self):
+        expected = []
+        actual = music_bubbles.parse_notes_list([])
         self.assertEqual(expected, actual)
 
-    def test_givenOneNote_ttcReturnsDictOfLengthOne(self):
-        expected = 1
-        actual = len(tune_to_coords.tune_to_coords(["e"], 12, 12))
+    def test_givenOneNote_ReturnsNoteName(self):
+        expected = "c"
+        tune_as_list = music_bubbles.parse_notes_list(["c"])
+        actual = tune_as_list[0]["name"]
         self.assertEqual(expected, actual)
 
     def test_notesReceiveColorAttributes(self):
-        coordinates = tune_to_coords.tune_to_coords(["c", "e"], 12, 12)
+        tune_as_list = music_bubbles.parse_notes_list(["c", "e"])
         expected = "#ee0000"
-        actual = coordinates[0]["color"]
+        actual = tune_as_list[0]["color"]
         self.assertEqual(expected, actual)
         expected = "#ffff38"
-        actual = coordinates[1]["color"]
-        self.assertEqual(expected, actual)
-
-    def test_notesHaveXAxisAttribute(self):
-        tune = ["c", "e", "g", "b"]
-        canvas_size = (60, 40)
-        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-        expected = (0, 16, 32, 48)
-        actual = tuple(coord["x"] for coord in coordinates)
-        self.assertEqual(expected, actual)
-
-    def test_tuneWithMoreThanFourNotesHaveXAxisAttributes(self):
-        tune = ["c", "d", "e", "f", "g", "a", "b", "c"]
-        canvas_size = (2970, 963)
-        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-        expected = (12, 392, 772, 1152, 1532, 1912, 2292, 2672)
-        actual = tuple(coord["x"] for coord in coordinates)
+        actual = tune_as_list[1]["color"]
         self.assertEqual(expected, actual)
 
     def test_notesHaveSizeAttribute(self):
-        tune = ["c", "d", "e", "f", "g", "a", "b", "c"]
-        canvas_size = (2970, 963)
-        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-        expected = 285
-        actual = coordinates[0]["diameter"]
+        tune = ["c", "d", "e", "f"]
+        tune_as_list = music_bubbles.parse_notes_list(tune)
+        expected = 0.2
+        actual = tune_as_list[0]["diameter"]
+        self.assertEqual(expected, actual)
+
+    def test_shortTuneHasXAxisAttributes(self):
+        tune = ["c", "e"]
+        tune_as_list = music_bubbles.parse_notes_list(tune)
+        expected = tuple((0.2 + 0.2 / 3) * i for i in range(2))
+        actual = tuple(note["x"] for note in tune_as_list)
+        self.assertEqual(expected, actual)
+
+    def test_longTuneHasXAxisAttributes(self):
+        tune = ["c", "d", "e", "f", "g", "a", "b"]
+        tune_as_list = music_bubbles.parse_notes_list(tune)
+        expected = tuple((1 / 9 + 1 / 9 / 3) * i for i in range(7))
+        actual = tuple(note["x"] for note in tune_as_list)
         self.assertEqual(expected, actual)
 
     def test_notesHaveYAxisAttribute(self):
         tune = ["c", "e"]
-        canvas_size = (2970, 963)
-        coordinates = tune_to_coords.tune_to_coords(tune, *canvas_size)
-        expected = (369, 247)
-        actual = (coordinates[0]["y"], coordinates[1]["y"])
+        tune_as_list = music_bubbles.parse_notes_list(tune)
+        expected = (0, 2)
+        actual = tuple(note["y"] for note in tune_as_list)
         self.assertEqual(expected, actual)
