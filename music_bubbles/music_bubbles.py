@@ -33,8 +33,9 @@ def _calculate_xpos(number_of_notes: int, bubble_size: float) -> Iterator[float]
 
 
 def parse_notes_list(tune: list[str]) -> list[dict]:
-    bubble_size = _calculate_bubble_size(len(tune))
-    tune_as_list = [
+    number_of_notes = len(tune)
+    bubble_size = _calculate_bubble_size(number_of_notes)
+    notes_as_dicts = [
         {
             "name": note,
             "diameter": bubble_size,
@@ -43,7 +44,8 @@ def parse_notes_list(tune: list[str]) -> list[dict]:
         }
         for note in tune
     ]
-    x_positions = _calculate_xpos(len(tune), bubble_size)
-    for note, xpos in zip(tune_as_list, x_positions):
+    for note, xpos in zip(
+        notes_as_dicts, _calculate_xpos(number_of_notes, bubble_size)
+    ):
         note["x"] = xpos
-    return tune_as_list
+    return notes_as_dicts
