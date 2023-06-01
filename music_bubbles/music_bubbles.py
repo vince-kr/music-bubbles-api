@@ -40,6 +40,7 @@ def _calculate_ypos(canvas_height: int, note: dict) -> float:
 def parse_notes_list(
     tune: list[str], canvas_width: int = 1, canvas_height: int = 1
 ) -> list[dict]:
+    print(tune)
     number_of_notes = len(tune)
     bubble_size = _calculate_bubble_size(number_of_notes, canvas_width)
     notes_as_dicts = []

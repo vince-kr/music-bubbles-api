@@ -32,27 +32,26 @@
       bubblesCanvas.width = 1782
       bubblesCanvas.height = 1260
 
-      // Some manual note drawing to get an idea
-      const bubblesContext = bubblesCanvas.getContext("2d");
-      bubblesContext.fillStyle = "red";
-      bubblesContext.beginPath();
-      bubblesContext.arc(360, 630, 120, 0, 2*Math.PI);
-      bubblesContext.fill();
-
       const listOfNotes = document.getElementById("tune");
       listOfNotes.addEventListener("input", proctor);
 
       function proctor(tune) {
+        tune = listOfNotes.value
         // Call each required function in turn
-        if (!validateInput(tune)) {
-          // Turn the input box red or smth and return the function
+        console.log('Calling validate')
+        if (tune == null || !validateTune(tune)) {
+          // Return the function
           return;
         };
+        tune = tune.replace(" ", "-")
+        console.log(tune)
+        console.log('Calling getBubbleNumbers (which calls API)')
         let coordinates = getBubbleNumbers(tune)
           .then(bubbleCoords => {
             return bubbleCoords;
           })
           .catch(error => console.error(error));
+        console.log('Calling drawBubbles (which should log "here")')
         drawBubbles(coordinates);
       };
 
@@ -61,7 +60,6 @@
         // This should also be safely checked in the backend
         const lettersNumbersSpacesRegex = /^[0-9a-zA-Z\s]+$/;
         return lettersNumbersSpacesRegex.test(title);
-
       }
 
       function validateTune(tune) {
@@ -72,17 +70,31 @@
       };
 
       function getBubbleNumbers(tune) {
-        if (tune.length == 0) {
+        if (!tune) {
           return []
         };
-        return fetch('http://music-bubbles-api.pep/${tune}')
+        var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
+        return fetch(address, {
+          method: "GET",
+          headers: {
+            "Origin": "http://127.0.0.1"
+          }
+        })
           .then(response => response.json())
           .catch(error => console.error(error))
       };
 
       function drawBubbles(coordinates) {
         // Access the canvas and draw circles according to coordinates
+        console.log(coordinates)
       };
+
+      // Some manual note drawing to get an idea
+      const bubblesContext = bubblesCanvas.getContext("2d");
+      bubblesContext.fillStyle = "red";
+      bubblesContext.beginPath();
+      bubblesContext.arc(360, 630, 120, 0, 2*Math.PI);
+      bubblesContext.fill();
     </script>
   </body>
 </html>
