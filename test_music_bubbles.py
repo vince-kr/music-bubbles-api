@@ -61,7 +61,7 @@ class TestParseNotesList(unittest.TestCase):
 
 class TestCoordinates(unittest.TestCase):
     def test_NoteXPositionDependsOnCanvasWidth(self):
-        canvas_width = 60
+        canvas_width = 60  # Bubble size 12, spacer size 4
         notes_as_dicts = mb.parse_notes_list(["c", "d", "e", "f"], canvas_width)
         expected = (0, 16, 32, 48)
         actual = tuple(note["x"] for note in notes_as_dicts)

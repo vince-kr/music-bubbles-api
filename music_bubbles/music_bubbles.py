@@ -1,5 +1,3 @@
-from typing import Iterator
-
 COLORS = {
     "c": "#ee0000",
     "d": "#ff860d",
@@ -28,8 +26,9 @@ def _calculate_bubble_size(number_of_notes: int, canvas_width: int) -> float:
     return canvas_width / (number_of_notes + number_of_spacers / 3)
 
 
-def _calculate_xpos(number_of_notes: int, bubble_size: float) -> Iterator[float]:
-    return ((bubble_size + bubble_size / 3) * i for i in range(number_of_notes))
+def _calculate_xpos(enumerated: int, note: dict) -> float:
+    bubble_size = note["diameter"]
+    return (bubble_size + bubble_size / 3) * enumerated
 
 
 def _calculate_ypos(canvas_height: int, note: dict) -> float:
@@ -43,17 +42,15 @@ def parse_notes_list(
 ) -> list[dict]:
     number_of_notes = len(tune)
     bubble_size = _calculate_bubble_size(number_of_notes, canvas_width)
-    notes_as_dicts = [
-        {
+    notes_as_dicts = []
+    for note in tune:
+        note_as_dict = {
             "name": note,
             "diameter": bubble_size,
             "color": COLORS[note],
         }
-        for note in tune
-    ]
-    x_positions = _calculate_xpos(number_of_notes, bubble_size)
-    for note, xpos in zip(notes_as_dicts, x_positions):
-        note["x"] = xpos
-    for note in notes_as_dicts:
+        notes_as_dicts.append(note_as_dict)
+    for i, note in enumerate(notes_as_dicts):
+        note["x"] = _calculate_xpos(i, note)
         note["y"] = _calculate_ypos(canvas_height, note)
     return notes_as_dicts
