@@ -17,6 +17,6 @@ app.add_middleware(
 @app.get("/canvas_coordinates")
 async def canvas_coordinates(notes_list: str):
     notes_list = notes_list.split("-")
-    print(notes_list)
+    # print(notes_list)
     notes_json = music_bubbles.parse_notes_list(notes_list, 1782, 1260)
-    return {"notes": notes_json}
+    return notes_json

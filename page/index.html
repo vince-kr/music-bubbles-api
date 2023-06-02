@@ -35,6 +35,16 @@
       const listOfNotes = document.getElementById("tune");
       listOfNotes.addEventListener("input", proctor);
 
+      async function caller(tune) {
+        try {
+          let notes_array = await getBubbleNumbers(tune);
+          console.log(notes_array);
+          return notes_array;
+        } catch (error) {
+          console.error(error); // Handle any errors here
+        }
+      }
+
       function proctor(tune) {
         tune = listOfNotes.value
         // Call each required function in turn
@@ -43,16 +53,11 @@
           // Return the function
           return;
         };
-        tune = tune.replace(" ", "-")
-        console.log(tune)
+        tune = tune.trim().replace(/ /g, "-")
         console.log('Calling getBubbleNumbers (which calls API)')
-        let coordinates = getBubbleNumbers(tune)
-          .then(bubbleCoords => {
-            return bubbleCoords;
-          })
-          .catch(error => console.error(error));
-        console.log('Calling drawBubbles (which should log "here")')
-        drawBubbles(coordinates);
+        let notes_array = caller(tune);
+        console.log('Calling drawBubbles')
+        drawBubbles(notes_array);
       };
 
       function validateTitle(title) {
@@ -69,24 +74,31 @@
         return noteNamesRegex.test(tune);
       };
 
-      function getBubbleNumbers(tune) {
-        if (!tune) {
-          return []
-        };
-        var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
-        return fetch(address, {
-          method: "GET",
-          headers: {
-            "Origin": "http://127.0.0.1"
-          }
-        })
-          .then(response => response.json())
-          .catch(error => console.error(error))
-      };
+async function getBubbleNumbers(tune) {
+  if (!tune) {
+    return [];
+  }
+  
+  try {
+    var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
+    const response = await fetch(address, {
+      method: "GET",
+      headers: {
+        "Origin": "http://127.0.0.1"
+      }
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return []; // Return an empty array or handle the error case as per your requirement
+  }
+}
 
-      function drawBubbles(coordinates) {
+
+      function drawBubbles(notes_array) {
         // Access the canvas and draw circles according to coordinates
-        console.log(coordinates)
+        console.log("drawBubbles function")
       };
 
       // Some manual note drawing to get an idea
