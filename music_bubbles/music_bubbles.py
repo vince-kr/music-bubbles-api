@@ -28,13 +28,13 @@ def _calculate_bubble_size(number_of_notes: int, canvas_width: int) -> float:
 
 def _calculate_xpos(enumerated: int, note: dict) -> float:
     bubble_size = note["diameter"]
-    return (bubble_size + bubble_size / 3) * enumerated
+    return (bubble_size + bubble_size / 3) * enumerated + bubble_size // 2
 
 
 def _calculate_ypos(canvas_height: int, note: dict) -> float:
     lowest_ypos = canvas_height - note["diameter"]
     note_y_val = VERTICAL[note["name"]]
-    return lowest_ypos - note_y_val * (lowest_ypos / 6)
+    return lowest_ypos - note_y_val * (lowest_ypos / 6) + note["radius"]
 
 
 def parse_notes_list(
@@ -48,6 +48,7 @@ def parse_notes_list(
         note_as_dict = {
             "name": note,
             "diameter": bubble_size,
+            "radius": bubble_size // 2,
             "color": COLORS[note],
         }
         notes_as_dicts.append(note_as_dict)

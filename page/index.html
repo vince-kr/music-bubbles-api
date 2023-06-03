@@ -35,29 +35,21 @@
       const listOfNotes = document.getElementById("tune");
       listOfNotes.addEventListener("input", proctor);
 
-      async function caller(tune) {
-        try {
-          let notes_array = await getBubbleNumbers(tune);
-          console.log(notes_array);
-          return notes_array;
-        } catch (error) {
-          console.error(error); // Handle any errors here
-        }
-      }
-
       function proctor(tune) {
         tune = listOfNotes.value
         // Call each required function in turn
-        console.log('Calling validate')
-        if (tune == null || !validateTune(tune)) {
-          // Return the function
+        if (!validateTune(tune)) {
           return;
         };
-        tune = tune.trim().replace(/ /g, "-")
-        console.log('Calling getBubbleNumbers (which calls API)')
-        let notes_array = caller(tune);
-        console.log('Calling drawBubbles')
-        drawBubbles(notes_array);
+        tune = tune.trim().replace(/ /g, "-");
+        // Get array of notes from API and use it to draw bubbles
+        getNotesArray(tune)
+          .then(notesArray => {
+            drawBubbles(notesArray);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
       };
 
       function validateTitle(title) {
@@ -74,39 +66,40 @@
         return noteNamesRegex.test(tune);
       };
 
-async function getBubbleNumbers(tune) {
-  if (!tune) {
-    return [];
-  }
-  
-  try {
-    var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
-    const response = await fetch(address, {
-      method: "GET",
-      headers: {
-        "Origin": "http://127.0.0.1"
+      function getNotesArray(tune) {
+        // If tune is null, return an empty array
+        if (!tune) {
+          return [];
+        }
+        // Call the API and return the resulting JSON
+        var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
+        return fetch(address, {
+          method: "GET",
+          headers: {
+            "Origin": "http://127.0.0.1"
+          }
+        })
+          .then(response => response.json())
+          .then(notesArray => {
+            return notesArray;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
       }
-    });
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return []; // Return an empty array or handle the error case as per your requirement
-  }
-}
 
-
-      function drawBubbles(notes_array) {
+      function drawBubbles(notesArray) {
         // Access the canvas and draw circles according to coordinates
-        console.log("drawBubbles function")
-      };
+        bubblesContext = bubblesCanvas.getContext("2d");
+        bubblesContext.clearRect(0, 0, 1782, 1260)
 
-      // Some manual note drawing to get an idea
-      const bubblesContext = bubblesCanvas.getContext("2d");
-      bubblesContext.fillStyle = "red";
-      bubblesContext.beginPath();
-      bubblesContext.arc(360, 630, 120, 0, 2*Math.PI);
-      bubblesContext.fill();
+        for (note of notesArray) {
+          bubblesContext.fillStyle = note.color;
+          bubblesContext.beginPath();
+          bubblesContext.arc(note.x, note.y, note.radius, 0, 2*Math.PI);
+          bubblesContext.fill();
+        }
+      };
     </script>
   </body>
 </html>
