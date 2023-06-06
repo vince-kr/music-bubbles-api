@@ -8,23 +8,22 @@
     </div>
     <div id="inputs">
       <label for="title">Title: </label><input id="title"><br />
-      <label for="tune">Tune: </label><input id="tune">
+      <label for="line-one">Tune: </label><input class="tune-line"><br />
+      <label for="line-two" style="color:#fff">Tune: </label><input class="tune-line">
     </div>
 
     <script>
       // Canvas container size and dynamic resize
-      const canvasContainer = document.getElementById("canvas_container");
-      let canvasWidthRendered = Math.round(document.documentElement.clientWidth * 0.5);
-      let canvasHeightRendered = Math.round(canvasWidthRendered * 0.70707);  // approximately
-      canvasContainer.style.width = canvasWidthRendered + "px";
-      canvasContainer.style.height = canvasHeightRendered + "px";
+      function applyCanvasSize() {
+        let canvasWidthRendered = Math.round(document.documentElement.clientWidth * 0.5);
+        let canvasHeightRendered = Math.round(canvasWidthRendered * 0.70707);  // approximately
+        canvasContainer.style.width = canvasWidthRendered + "px";
+        canvasContainer.style.height = canvasHeightRendered + "px";
+      }
 
-      window.addEventListener("resize", function() {
-        let canvasWidth = Math.round(document.documentElement.clientWidth * 0.5);
-        let canvasHeight = Math.round(canvasWidth * 0.70707);
-        canvasContainer.style.width = canvasWidth + "px";
-        canvasContainer.style.height = canvasHeight + "px";
-      });
+      const canvasContainer = document.getElementById("canvas_container");
+      applyCanvasSize()
+      window.addEventListener("resize", applyCanvasSize);
 
       // Canvas contents
       const bubblesCanvas = document.getElementById("bubbles");
@@ -32,18 +31,31 @@
       bubblesCanvas.width = 1782
       bubblesCanvas.height = 1260
 
-      const listOfNotes = document.getElementById("tune");
-      listOfNotes.addEventListener("input", proctor);
+      // Get input elements and register listeners
+      const title_input = document.getElementById("title");
+      title_input.addEventListener("input", proctor);
 
-      function proctor(tune) {
-        tune = listOfNotes.value
-        // Call each required function in turn
-        if (!validateTune(tune)) {
+      const tune_lines = document.getElementsByClassName("tune-line");
+      for (line of tune_lines) {
+        line.addEventListener("input", proctor);
+      }
+
+      function proctor() {
+        console.log('here')
+        title = title_input.value
+        tune_one = tune_lines[0].value
+        tune_two = tune_lines[1].value
+
+        // If an input field contains invalid characters, return null
+        if (!validateTitle(title) || !validateTune(tune_one) || !validateTune(tune_two)) {
+          console.log('validation failed')
           return;
         };
-        tune = tune.trim().replace(/ /g, "-");
+        tune_one = tune_one.trim().replace(/ /g, "-");
+        tune_two = tune_two.trim().replace(/ /g, "-");
+
         // Get array of notes from API and use it to draw bubbles
-        getNotesArray(tune)
+        getNotesArray(tune_one)
           .then(notesArray => {
             drawBubbles(notesArray);
           })
@@ -53,16 +65,16 @@
       };
 
       function validateTitle(title) {
-        // Make sure the title only contains alphanumeric characters
+        // Make sure the title only contains alphanumeric characters or whitespace
         // This should also be safely checked in the backend
-        const lettersNumbersSpacesRegex = /^[0-9a-zA-Z\s]+$/;
+        const lettersNumbersSpacesRegex = /^[0-9a-zA-Z\s]*$/;
         return lettersNumbersSpacesRegex.test(title);
       }
 
       function validateTune(tune) {
-        // Make sure tune only contains valid note names (a - g)
+        // Make sure tune only contains valid note names (a - g) or whitespace
         // This should also be safely checked in the backend
-        const noteNamesRegex = /^[abcdefgr\s]+$/;
+        const noteNamesRegex = /^[abcdefgr\s]*$/;
         return noteNamesRegex.test(tune);
       };
 
@@ -72,7 +84,7 @@
           return [];
         }
         // Call the API and return the resulting JSON
-        var address = 'http://127.0.0.1:50505/canvas_coordinates?notes_list=' + tune;
+        var address = 'http://127.0.0.1:50505/canvas_coordinates?notes=' + tune;
         return fetch(address, {
           method: "GET",
           headers: {
