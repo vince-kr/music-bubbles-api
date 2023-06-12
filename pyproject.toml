@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "musicbubbles"
+version = "0.1.0"
+description = "Draw simple colourful sheet music (ages 3+)"
+authors = ["Vince <vince@krijnsen.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Pillow = "^9.5.0"
+fastapi = "^0.97.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
