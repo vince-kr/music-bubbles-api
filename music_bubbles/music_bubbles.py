@@ -94,3 +94,18 @@ class PillowCoords:
             note["x"] = PillowCoords._calculate_xpos(i, note)
             note["y"] = PillowCoords._calculate_ypos(canvas_height, note)
         return notes_as_dicts
+
+
+class Tune(list):
+    def __init__(self, notes: list) -> None:
+        note_attributes = self._generate_note_attributes(notes)
+        super().__init__(note_attributes)
+
+    def _generate_note_attributes(self, notes):
+        return [{"name": note, "color": COLORS[note]} for note in notes]
+
+    def generate_canvas_coords(self, width: int, height: int) -> None:
+        print(self)
+
+    def generate_pillow_coords(self, width: int, height: int) -> None:
+        pass

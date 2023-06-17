@@ -3,6 +3,20 @@ from music_bubbles import CanvasCoords as cv
 from music_bubbles import PillowCoords as pl
 
 
+class TestParser(unittest.TestCase):
+    # Both classes have a parse_notes_list main method that takes a list of strings and
+    # returns a list of dicts. The values for both are:
+    # 1. Name       IDENTICAL
+    # 2. Diameter   IDENTICAL
+    # 3. Radius     IDENTICAL
+    # 4. Color      IDENTICAL
+    # 5. X & Y pos  DIFFERENT
+    #
+    # So I should test cases 1-4 in one test class, which calls one function (or
+    # instantiates one class) and test case 5 in a separate class.
+    pass
+
+
 class TestGetCanvasAttributes(unittest.TestCase):
     def test_sanity(self):
         self.assertTrue(True)
