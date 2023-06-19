@@ -97,15 +97,39 @@ class PillowCoords:
 
 
 class Tune(list):
-    def __init__(self, notes: list) -> None:
+    def __init__(self, notes: list = []) -> None:
+        self._relative_radius = self._calculate_radius(len(notes))
+        self._relative_diameter = self._relative_radius * 2
         note_attributes = self._generate_note_attributes(notes)
         super().__init__(note_attributes)
 
+    def _calculate_radius(self, number_of_notes: int) -> float:
+        if number_of_notes < 4:
+            number_of_notes = 4
+        number_of_spacers = number_of_notes - 1
+        return 1 / ((number_of_notes + number_of_spacers / 3) * 2)
+
     def _generate_note_attributes(self, notes):
-        return [{"name": note, "color": COLORS[note]} for note in notes]
+        return [
+            {
+                "name": note,
+                "color": COLORS[note],
+                "radius": self._relative_radius,
+                "diameter": self._relative_diameter,
+            }
+            for note in notes
+        ]
 
     def generate_canvas_coords(self, width: int, height: int) -> None:
-        print(self)
+        for i, note in enumerate(self):
+            note["radius"] *= width  # Relative radius * width = absolute radius
+            note["diameter"] = note["radius"] * 2
+            note["x"] = self._calculate_xpos(i, note)
+        return self
+
+    def _calculate_xpos(self, enumerated: int, note: dict) -> float:
+        diameter = note["diameter"]
+        return (diameter + diameter / 3) * enumerated + note["radius"]
 
     def generate_pillow_coords(self, width: int, height: int) -> None:
         pass
