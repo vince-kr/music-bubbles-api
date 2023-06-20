@@ -109,14 +109,16 @@ class Tune(list):
         return 1 / ((number_of_notes + number_of_spacers / 3) * 2)
 
     def _generate_note_attributes(self, notes):
-        return [
-            {
-                "name": note,
-                "color": COLORS[note],
-                "radius": self._relative_radius,
-            }
-            for note in notes
-        ]
+        notes_as_dicts = []
+        for note in notes:
+            notes_as_dicts.append(
+                {
+                    "name": note,
+                    "color": COLORS[note],
+                    "radius": self._relative_radius,
+                }
+            )
+        return notes_as_dicts
 
     def generate_coords(
         self, width: int, height: int, for_canvas: bool = False
@@ -125,14 +127,14 @@ class Tune(list):
             note["radius"] *= width  # relative radius * width = absolute radius
             note["diameter"] = note["radius"] * 2
             note["offset"] = note["radius"] * for_canvas
-            note["x"] = self._calculate_xpos(i, note, note["offset"])
-            note["y"] = self._calculate_ypos(height, note, note["offset"])
+            note["x"] = self._calculate_xpos(i, note)
+            note["y"] = self._calculate_ypos(height, note)
         return self
 
-    def _calculate_xpos(self, num: int, note: dict, canvas_offset: float) -> float:
+    def _calculate_xpos(self, num: int, note: dict) -> float:
         diameter = note["diameter"]
-        return (diameter + diameter / 3) * num + canvas_offset
+        return (diameter + diameter / 3) * num + note["offset"]
 
-    def _calculate_ypos(self, height: int, note: dict, canvas_offset: float) -> float:
+    def _calculate_ypos(self, height: int, note: dict) -> float:
         lowest_ypos = height - note["diameter"]
-        return lowest_ypos - VERTICAL[note["name"]] * (lowest_ypos / 6) + canvas_offset
+        return lowest_ypos - VERTICAL[note["name"]] * (lowest_ypos / 6) + note["offset"]
