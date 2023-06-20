@@ -122,14 +122,19 @@ class Tune(list):
 
     def generate_canvas_coords(self, width: int, height: int) -> None:
         for i, note in enumerate(self):
-            note["radius"] *= width  # Relative radius * width = absolute radius
+            note["radius"] *= width  # relative radius * width = absolute radius
             note["diameter"] = note["radius"] * 2
             note["x"] = self._calculate_xpos(i, note)
+            note["y"] = self._calculate_ypos(height, note)
         return self
 
     def _calculate_xpos(self, enumerated: int, note: dict) -> float:
         diameter = note["diameter"]
         return (diameter + diameter / 3) * enumerated + note["radius"]
+
+    def _calculate_ypos(self, canvas_height: int, note: dict) -> float:
+        lowest_ypos = canvas_height - note["diameter"]
+        return lowest_ypos - VERTICAL[note["name"]] * (lowest_ypos / 6) + note["radius"]
 
     def generate_pillow_coords(self, width: int, height: int) -> None:
         pass

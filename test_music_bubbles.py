@@ -55,27 +55,25 @@ class TestCanvasAttributes(unittest.TestCase):
         actual = tuple(note["x"] for note in notes_as_dicts)
         self.assertEqual(expected, actual)
 
+    def test_longTuneHasXAxisAttributes(self):
+        tune = ["c", "d", "e", "f", "g", "a", "b"]
+        width = 27  # radius 1.5, diameter 3, spacer 1
+        height = 1  # not relevant
+        notes_as_dicts = Tune(tune).generate_canvas_coords(width, height)
+        radius = 1.5
+        diameter = 3
+        expected = tuple(1.5 + i * 4 for i in range(7))
+        actual = tuple(note["x"] for note in notes_as_dicts)
+        self.assertEqual(expected, actual)
 
-#     def test_longTuneHasXAxisAttributes(self):
-#         tune = ["c", "d", "e", "f", "g", "a", "b"]
-#         notes_as_dicts = cv.parse_notes_list(tune)
-#         bubble_diameter = 1 / 9  # Divisor is 7 notes + (7 - 1) * 1 / 3 spacers
-#         spacer_diameter = bubble_diameter / 3
-#         bubble_radius = bubble_diameter / 2
-#         expected = tuple(
-#             (bubble_diameter + spacer_diameter) * i + bubble_radius for i in range(7)
-#         )
-#         actual = tuple(note["x"] for note in notes_as_dicts)
-#         self.assertEqual(expected, actual)
-
-#     def test_notesHaveYAxisAttribute(self):
-#         tune = ["c", "e"]
-#         notes_as_dicts = cv.parse_notes_list(tune)
-#         c_ypos = 0.8 - 0 * (0.8 / 6) + 0.1  # C offset 0
-#         e_ypos = 0.8 - 2 * (0.8 / 6) + 0.1  # E offset 2
-#         expected = (c_ypos, e_ypos)
-#         actual = tuple(note["y"] for note in notes_as_dicts)
-#         self.assertEqual(expected, actual)
+    def test_notesHaveYAxisAttribute(self):
+        tune = ["c", "e"]
+        width = 15  # radius 1.5, diameter 3
+        height = 9  # lowest y_pos 6
+        notes_as_dicts = Tune(tune).generate_canvas_coords(width, height)
+        expected = (7.5, 5.5)
+        actual = tuple(note["y"] for note in notes_as_dicts)
+        self.assertEqual(expected, actual)
 
 
 # class TestGetPillowAttributes(unittest.TestCase):
