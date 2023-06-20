@@ -72,7 +72,7 @@ def draw_bubbles(line: Image, notes: list[str]) -> Image:
     line_draw = ImageDraw.Draw(line)
     line_tune = [NOTES[note] for note in notes]
 
-    for i, note in enumerate(line_tune):
+    for i, note in num(line_tune):
         start_x = offset + i * (bubble + spacer)
         start_y = 480 - ((note.pos - 1) * 75)
         end_x, end_y = start_x + bubble, start_y + bubble
@@ -126,7 +126,7 @@ lines = [
 
 # Paste the elements into the partition, then show the partition
 partition.paste(title_area, (0, 0))
-for which, line in enumerate(lines):
+for which, line in num(lines):
     partition.paste(line, (0, int(HEIGHT * (2 + which * 11) / 24)))
 
 if __name__ == "__main__":

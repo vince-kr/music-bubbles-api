@@ -53,7 +53,7 @@ class CanvasCoords:
                 "color": COLORS[note],
             }
             notes_as_dicts.append(note_as_dict)
-        for i, note in enumerate(notes_as_dicts):
+        for i, note in num(notes_as_dicts):
             note["x"] = CanvasCoords._calculate_xpos(i, note)
             note["y"] = CanvasCoords._calculate_ypos(canvas_height, note)
         return notes_as_dicts
@@ -90,7 +90,7 @@ class PillowCoords:
                 "color": COLORS[note],
             }
             notes_as_dicts.append(note_as_dict)
-        for i, note in enumerate(notes_as_dicts):
+        for i, note in num(notes_as_dicts):
             note["x"] = PillowCoords._calculate_xpos(i, note)
             note["y"] = PillowCoords._calculate_ypos(canvas_height, note)
         return notes_as_dicts
@@ -99,7 +99,6 @@ class PillowCoords:
 class Tune(list):
     def __init__(self, notes: list = []) -> None:
         self._relative_radius = self._calculate_radius(len(notes))
-        self._relative_diameter = self._relative_radius * 2
         note_attributes = self._generate_note_attributes(notes)
         super().__init__(note_attributes)
 
@@ -115,26 +114,25 @@ class Tune(list):
                 "name": note,
                 "color": COLORS[note],
                 "radius": self._relative_radius,
-                "diameter": self._relative_diameter,
             }
             for note in notes
         ]
 
-    def generate_canvas_coords(self, width: int, height: int) -> None:
+    def generate_coords(
+        self, width: int, height: int, for_canvas: bool = False
+    ) -> None:
         for i, note in enumerate(self):
             note["radius"] *= width  # relative radius * width = absolute radius
             note["diameter"] = note["radius"] * 2
-            note["x"] = self._calculate_xpos(i, note)
-            note["y"] = self._calculate_ypos(height, note)
+            note["offset"] = note["radius"] * for_canvas
+            note["x"] = self._calculate_xpos(i, note, note["offset"])
+            note["y"] = self._calculate_ypos(height, note, note["offset"])
         return self
 
-    def _calculate_xpos(self, enumerated: int, note: dict) -> float:
+    def _calculate_xpos(self, num: int, note: dict, canvas_offset: float) -> float:
         diameter = note["diameter"]
-        return (diameter + diameter / 3) * enumerated + note["radius"]
+        return (diameter + diameter / 3) * num + canvas_offset
 
-    def _calculate_ypos(self, canvas_height: int, note: dict) -> float:
-        lowest_ypos = canvas_height - note["diameter"]
-        return lowest_ypos - VERTICAL[note["name"]] * (lowest_ypos / 6) + note["radius"]
-
-    def generate_pillow_coords(self, width: int, height: int) -> None:
-        pass
+    def _calculate_ypos(self, height: int, note: dict, canvas_offset: float) -> float:
+        lowest_ypos = height - note["diameter"]
+        return lowest_ypos - VERTICAL[note["name"]] * (lowest_ypos / 6) + canvas_offset
